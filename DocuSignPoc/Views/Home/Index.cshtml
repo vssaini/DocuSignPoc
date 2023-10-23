@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<main>
+    <section class="row" aria-labelledby="aspnetTitle">
+        <h1 id="title">DocuSign POC</h1>
+        <p class="lead">This sample send email for signing using DocuSign POC.</p>
+        <p>@Html.ActionLink("Send DocuSign Email", "Index", "DocuSign", new { area = "" }, new { @class = "btn btn-primary btn-md" })</p>
+    </section>
+</main>

@@ -1,0 +1,76 @@
+﻿@{
+    const string pageTitle = "DocuSign Consent";
+
+    ViewBag.Title = pageTitle;
+    string btnSubmitTxt = "Grant Consent";
+    
+    bool consentGranted = ViewBag.ConsentGranted;
+    if (consentGranted)
+    {
+        btnSubmitTxt = "Consent granted";
+    }
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-sm-4">
+        <h2>@pageTitle</h2>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>@pageTitle</h5>
+                </div>
+
+                <div class="ibox-content">
+                    <div id="ms-consent">
+
+                        <p>To be able to send PDF to clients for signing using DocuSign, you will need to grant <strong>one time consent</strong> to the <em>Kudurru Stone</em> app. </p>
+
+                        @using (Ajax.BeginForm("GrantConsent", "DocuSign", new AjaxOptions { OnBegin = "onBegin", OnSuccess = "onSuccess", OnFailure = "onFailure" }, new { @id = "docuSignConsent" }))
+                        {
+                            <div class="form-horizontal">
+                                <div class="form-group">
+                                    <div class="ml-14">
+                                        <input type="submit" id="Submit" value="@btnSubmitTxt" class="btn btn-primary" disabled="@(consentGranted)"/>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+function onBegin() {
+    common.changeButtonState($("#docuSignConsent #Submit"), 'Please wait...', true);
+}
+
+function onSuccess(data) {
+        if (data.status === true) {
+
+            common.showMessage(data.message, 'success');
+        }
+        else {
+            if (data.url) {
+                common.showMessage(data.message, 'warning');
+                window.location.replace(data.url);
+            } else {
+                common.showMessage(data.message, 'error');
+                common.changeButtonState($("#docuSignConsent #Submit"), '@btnSubmitTxt', false);
+            }
+        }}
+
+function onFailure() {
+        common.changeButtonState($("#docuSignConsent #Submit"), '@btnSubmitTxt', false);
+        common.showMessage('Error occurred while granting consent.', 'error');
+}
+
+</script>
